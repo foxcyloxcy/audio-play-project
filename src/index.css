@@ -67,6 +67,13 @@ button:focus-visible {
   }
 }
 
+#root{
+  min-width: 100%;
+}
+
+.app-container{
+  width: 100%;
+}
 
 @tailwind base;
 @tailwind components;
