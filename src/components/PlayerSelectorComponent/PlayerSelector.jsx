@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const PlayerSelector = () => {
-  const [numPlayers, setNumPlayers] = useState(1);
-
+const PlayerSelector = ({ numPlayers, setNumPlayers }) => {
   const handleSelect = (number) => {
     setNumPlayers(number);
   };
