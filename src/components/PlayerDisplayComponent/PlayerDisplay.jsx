@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import personIcon from '../../assets/personIcon.png';  // Adjust the path as necessary
+import personIcon from '../../assets/personIcon.png'; // Adjust the path as necessary
 
 const PlayerDisplay = ({ numPlayers }) => {
   const [showDialog, setShowDialog] = useState(Array(numPlayers + 1).fill(false));
@@ -14,12 +14,12 @@ const PlayerDisplay = ({ numPlayers }) => {
   }, [numPlayers]);
 
   return (
-    <div className="flex items-center space-x-2 mt-4 relative">
+    <div className="flex items-center space-x-4 mt-4 relative">
       {[...Array(numPlayers + 1)].map((_, index) => (
         <div key={index} className="relative">
-          <img src={personIcon} alt="Player Icon" className="w-8 h-8" />
+          <img src={personIcon} alt="Player Icon" className="w-44 h-44" /> {/* Increased size */}
           {showDialog[index] && (
-            <div className="absolute top-0 left-8 bg-white border border-gray-300 p-2 rounded shadow-md">
+            <div className="absolute top-0 left-30 bg-white border border-gray-300 p-2 rounded shadow-md">
               Hello!
             </div>
           )}
