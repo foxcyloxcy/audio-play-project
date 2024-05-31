@@ -14,15 +14,17 @@ const PlayerDisplay = ({ numPlayers, start }) => {
 
     return () => clearInterval(interval);
   }, [numPlayers]);
-  console.log('start from game setup',start)
 
   return (
     <div className="flex items-center space-x-4 mt-4 relative">
       {[...Array(numPlayers + 1)].map((_, index) => (
-        <div key={index} className="relative">
-          <img src={personIcon} alt="Player Icon" className="w-44 h-44" /> {/* Increased size */}
-          {showDialog[index] && (
-            <div className="absolute top-0 left-30 bg-white border border-gray-300 p-2 rounded shadow-md">
+        <div key={index} className="flex flex-col items-center relative">
+          <img src={personIcon} alt={`Player ${index + 1} Icon`} className="w-44 h-44" />
+          <p className="mt-2 text-lg font-semibold">
+            {index === 0 ? 'You' : `Player ${index}`}
+          </p>
+          {showDialog[index] && start === true && (
+            <div className="absolute top-0 left-5 transform -translate-x-1/2 bg-white border border-gray-300 p-2 rounded shadow-md">
               {lastMessage}
             </div>
           )}

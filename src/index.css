@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -75,6 +79,6 @@ button:focus-visible {
   width: 100%;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+*:focus {
+  outline: 0 !important;
+}
