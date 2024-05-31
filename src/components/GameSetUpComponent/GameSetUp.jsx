@@ -4,9 +4,10 @@ import PlayerDisplay from '../PlayerDisplayComponent/PlayerDisplay.jsx'; // Adju
 
 const GameSetup = () => {
   const [numPlayers, setNumPlayers] = useState(0); // Start with 0 to hide PlayerDisplay initially
-  const [start, setStart] = useState(false); // Start with 0 to hide PlayerDisplay initially
+  const [start, setStart] = useState(false); // Start with false to hide PlayerDisplay initially
   const [userName, setUserName] = useState('');
   const [disableButton, setDisableButton] = useState(true);
+  const [lastMessage, setLastMessage] = useState('Horray'); // Initial message
 
   const handleNameChange = (e) => {
     setUserName(e.target.value);
@@ -14,23 +15,32 @@ const GameSetup = () => {
 
   const handleStart = () => {
     setStart(true);
+    setDisableButton(false);
     setUserName('');
-    setDisableButton(false)
   };
 
   const handleReset = () => {
     setNumPlayers(0);
     setUserName('');
+    setStart(false);
+    setDisableButton(true);
   };
 
   const triggerHephep = () => {
-    setNumPlayers(0);
-    setUserName('');
+    handleUserClick('HepHep');
   };
 
   const triggerHorray = () => {
-    setNumPlayers(0);
-    setUserName('');
+    handleUserClick('Horray');
+  };
+
+  const handleUserClick = (message) => {
+    if (message === lastMessage) {
+      alert('You are out!');
+      handleReset();
+    } else {
+      setLastMessage(message);
+    }
   };
 
   return (
@@ -55,7 +65,7 @@ const GameSetup = () => {
           <p className="text-xl mt-4">
             {userName} has selected {numPlayers} {numPlayers === 1 ? 'player' : 'players'} to play with.
           </p>
-          <PlayerDisplay numPlayers={numPlayers} start={start} />
+          <PlayerDisplay numPlayers={numPlayers} start={start} lastMessage={lastMessage} handleUserClick={handleUserClick} />
           <div className="flex flex-row items-center justify-center justify-around mt-4 w-full">
             <button
               onClick={triggerHephep}
