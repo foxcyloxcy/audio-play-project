@@ -4,10 +4,16 @@ import PlayerDisplay from '../PlayerDisplayComponent/PlayerDisplay.jsx'; // Adju
 
 const GameSetup = () => {
   const [numPlayers, setNumPlayers] = useState(0); // Start with 0 to hide PlayerDisplay initially
+  const [start, setStart] = useState(0); // Start with 0 to hide PlayerDisplay initially
   const [userName, setUserName] = useState('');
 
   const handleNameChange = (e) => {
     setUserName(e.target.value);
+  };
+
+  const handleStart = () => {
+    setStart(1);
+    setUserName('');
   };
 
   const handleReset = () => {
@@ -37,13 +43,21 @@ const GameSetup = () => {
           <p className="text-xl mt-4">
             {userName} has selected {numPlayers} {numPlayers === 1 ? 'player' : 'players'}.
           </p>
-          <PlayerDisplay numPlayers={numPlayers} />
-          <button
-            onClick={handleReset}
-            className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
-          >
-            Reset
-          </button>
+          <PlayerDisplay numPlayers={numPlayers} start={start} />
+            <div className="flex flex-col items-center justify-center">
+                <button
+                    onClick={handleStart}
+                    className="mt-4 px-4 py-2 bg-green-500 text-black rounded-md"
+                >
+                    Start
+                </button>
+                <button
+                    onClick={handleReset}
+                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+                >
+                    Reset
+                </button>
+            </div>
         </div>
       )}
     </div>
