@@ -10,12 +10,16 @@ const GameSetup = () => {
   const [lastMessage, setLastMessage] = useState('Horray'); // Initial message
   const [currentTurn, setCurrentTurn] = useState(-1); // Track the current turn index (-1 indicates no active turn)
   const [remainingPlayers, setRemainingPlayers] = useState([]);
+  const [playTime, setPlayTime] = useState(0); // Track play time for playerIndex
 
   useEffect(() => {
+    let timer;
     if (start) {
       setRemainingPlayers([...Array(numPlayers + 1).keys()]);
       setCurrentTurn(0); // Start with the user
+      timer = setInterval(() => setPlayTime((prev) => prev + 1), 1000); // Increment play time every second
     }
+    return () => clearInterval(timer);
   }, [start, numPlayers]);
 
   const handleNameChange = (e) => {
@@ -36,6 +40,7 @@ const GameSetup = () => {
     setLastMessage('Horray');
     setCurrentTurn(-1);
     setRemainingPlayers([]);
+    setPlayTime(0);
   };
 
   const handleUserClick = (message) => {
@@ -43,47 +48,48 @@ const GameSetup = () => {
       alert('You are out!');
       handleReset();
     } else {
-      setLastMessage(message);
-      setCurrentTurn((prevTurn) => (prevTurn + 1) % remainingPlayers.length);
+      const fromPlayerResponse = message === 'HepHep' ? 'Horray' : 'HepHep';
+      setLastMessage(fromPlayerResponse);
+      const randomTurn = Math.random() > 0.5 ? 1 : 0;;
+      console.log('random Turn from handleclick',randomTurn)
+      setCurrentTurn(randomTurn)
     }
   };
 
   useEffect(() => {
     if (start && currentTurn !== 0) {
+
       const timer = setTimeout(() => {
-        setCurrentTurn((prevTurn) => {
-          let nextTurn = (prevTurn + 1) % remainingPlayers.length;
-          if (nextTurn === 0) nextTurn = 1; // Ensure the user's turn is skipped for AI processing
+        const nextTurn = (currentTurn + 1) % remainingPlayers.length;
+        const currentMessage = lastMessage === 'HepHep' ? 'Horray' : 'HepHep';
 
-          // AI players logic
-          if (remainingPlayers.length > 2) {
-            const currentMessage = lastMessage === 'HepHep' ? 'Horray' : 'HepHep';
-            const randomChoice = Math.random() > 0.5 ? currentMessage : lastMessage;
-
-            if (randomChoice === lastMessage) {
-              // AI made a mistake
-              alert(`Player ${remainingPlayers[nextTurn]} is out!`);
-              const newRemainingPlayers = remainingPlayers.filter(
-                (_, index) => index !== nextTurn
-              );
+        if (nextTurn === 0) {
+          setCurrentTurn(0); // Player's turn
+        } else {
+          // AI turn
+          const randomChoice = Math.random() > 0.5 ? currentMessage : lastMessage;
+          if (randomChoice === lastMessage) {
+            setTimeout(() => {
+              const newRemainingPlayers = remainingPlayers.filter((_, index) => index !== nextTurn);
               setRemainingPlayers(newRemainingPlayers);
-
-              if (newRemainingPlayers.length === 2) {
-                // Only the user and one AI left, the AI should not make a mistake
-                nextTurn = newRemainingPlayers.indexOf(newRemainingPlayers[1]);
-              } else {
-                nextTurn = (nextTurn + 1) % newRemainingPlayers.length;
-                if (nextTurn === 0) nextTurn = 1;
-              }
-            } else {
-              setLastMessage(randomChoice);
-            }
+            }, 1000); // Delay before removing the AI player
+              alert(`Player ${remainingPlayers[nextTurn]} is out!`);
           } else {
-            setLastMessage(lastMessage === 'HepHep' ? 'Horray' : 'HepHep');
+            setLastMessage(randomChoice);
+            setCurrentTurn(nextTurn);
           }
+        }
+      }, 2000);
 
-          return nextTurn;
-        });
+      return () => clearTimeout(timer);
+    } else if (start && currentTurn === 1 && remainingPlayers.length === 2) {
+      // Ensure AI takes turn if only one AI is left
+      const timer = setTimeout(() => {
+        const nextMessage = lastMessage === 'HepHep' ? 'Horray' : 'HepHep';
+        setLastMessage(nextMessage);
+        const randomTurn = Math.random() > 0.5 ? 1 : 0;
+        console.log('random Turn from else if',randomTurn)
+        setCurrentTurn(randomTurn)
       }, 2000);
 
       return () => clearTimeout(timer);
@@ -143,6 +149,7 @@ const GameSetup = () => {
               onClick={handleStart}
               className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-all duration-300"
               aria-label="Start the game"
+              disabled={start} // Disable start button once the game starts
             >
               Start
             </button>
@@ -154,6 +161,11 @@ const GameSetup = () => {
               Reset
             </button>
           </div>
+        </div>
+      )}
+      {start && (
+        <div className="mt-4 text-xl">
+          Time spent playing: {playTime} seconds
         </div>
       )}
     </div>
