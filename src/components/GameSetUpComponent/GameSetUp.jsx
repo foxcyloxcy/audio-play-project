@@ -16,7 +16,7 @@ const GameSetup = () => {
     let timer;
     if (start) {
       setRemainingPlayers([...Array(numPlayers + 1).keys()]);
-      setCurrentTurn(0); // Start with the user
+      setCurrentTurn(1); // Start with AI
       timer = setInterval(() => setPlayTime((prev) => prev + 1), 1000); // Increment play time every second
     }
     return () => clearInterval(timer);
@@ -38,7 +38,7 @@ const GameSetup = () => {
     setStart(false);
     setDisableButton(true);
     setLastMessage('Horray');
-    setCurrentTurn(-1);
+    setCurrentTurn(1);
     setRemainingPlayers([]);
     setPlayTime(0);
   };
@@ -50,15 +50,12 @@ const GameSetup = () => {
     } else {
       const fromPlayerResponse = message === 'HepHep' ? 'Horray' : 'HepHep';
       setLastMessage(fromPlayerResponse);
-      const randomTurn = Math.random() > 0.5 ? 1 : 0;;
-      console.log('random Turn from handleclick',randomTurn)
-      setCurrentTurn(randomTurn)
+      setCurrentTurn((prevTurn) => (prevTurn + 1) % remainingPlayers.length);
     }
   };
 
   useEffect(() => {
     if (start && currentTurn !== 0) {
-
       const timer = setTimeout(() => {
         const nextTurn = (currentTurn + 1) % remainingPlayers.length;
         const currentMessage = lastMessage === 'HepHep' ? 'Horray' : 'HepHep';
@@ -87,9 +84,7 @@ const GameSetup = () => {
       const timer = setTimeout(() => {
         const nextMessage = lastMessage === 'HepHep' ? 'Horray' : 'HepHep';
         setLastMessage(nextMessage);
-        const randomTurn = Math.random() > 0.5 ? 1 : 0;
-        console.log('random Turn from else if',randomTurn)
-        setCurrentTurn(randomTurn)
+        setCurrentTurn(0); // Player's turn
       }, 2000);
 
       return () => clearTimeout(timer);
